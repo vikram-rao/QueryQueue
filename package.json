@@ -4,10 +4,10 @@
   "description": "A simple database query queing module",
   "main": "queryqueue.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec"
   },
   "author": "Vikram Rao",
-  "license": "ISC",
+  "license": "MIT",
   "keywords": [
     "query",
     "queue",
@@ -15,5 +15,20 @@
   ],
   "dependencies": {
     "mysql": "^2.15.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikram-rao/QueryQueue.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vikram-rao/QueryQueue/issues"
+  },
+  "homepage": "https://github.com/vikram-rao/QueryQueue#readme",
+  "engines": {
+    "node": ">=4.2.4"
   }
 }

@@ -1,3 +1,5 @@
+'use strict';
+
 var DB = require("./db");
 var db = DB();
 
