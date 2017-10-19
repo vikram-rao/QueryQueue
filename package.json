@@ -12,5 +12,8 @@
     "query",
     "queue",
     "database"
-  ]
+  ],
+  "dependencies": {
+    "mysql": "^2.15.0"
+  }
 }
