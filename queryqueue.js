@@ -81,6 +81,9 @@ module.exports = (function QueryQueue() {
         },
         Runner: function (callback) {
             return Runner(dbConfig, callback);
+        },
+        data: function () {
+            return dbConfig;
         }
     };
 })();
