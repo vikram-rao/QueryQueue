@@ -1,6 +1,6 @@
 {
   "name": "queryqueue",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple database query queing module",
   "main": "queryqueue.js",
   "scripts": {
