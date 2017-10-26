@@ -35,8 +35,7 @@ function Runner(config, done) {
         })
     }
 
-    function runQuery(i) {
-        var queryInfo = queries[i];
+    function runQuery(queryInfo) {
         console.log("Running query for " + queryInfo.key);
         db.executeQuery(queryInfo.query, queryInfo.params, function (result) {
             var keyPath = queryInfo.key.split(".");
@@ -48,10 +47,10 @@ function Runner(config, done) {
             });
             queryResult[lastKey] = result;
             console.log("Got results for " + queryInfo.key);
-            onQueryComplete()
+            onQueryComplete(true)
         }, function (error) {
             console.log(error);
-            onQueryComplete()
+            onQueryComplete(false)
         })
     }
 
@@ -61,7 +60,9 @@ function Runner(config, done) {
             done(results);
             return
         }
-        for (var i in queries) runQuery(i);
+        queries.forEach(function (query) {
+            runQuery(query);
+        });
     }
 
     return {
