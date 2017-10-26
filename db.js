@@ -13,17 +13,25 @@ module.exports = function () {
 
     function executeQuery(query, params, success, failure) {
         params = params || [];
-        pool.query(query, params, function (err, result) {
+        pool.getConnection(function (err, connection) {
             if (err) {
                 failure && failure(err);
-                return
+                return;
             }
-            success(result)
-        })
+            connection.query(query, params, function (err, result) {
+                pool.releaseConnection(connection);
+                if (err) {
+                    failure && failure(err);
+                    return;
+                }
+                success(result);
+            })
+        });
     }
 
     function disconnect(callback) {
         pool.end(callback);
+        pool = 0;
     }
 
     return {

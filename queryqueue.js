@@ -3,10 +3,8 @@
 var DB = require("./db");
 var db = DB();
 
-function Runner(config, done) {
+function Runner(db, done) {
     var count = 0;
-
-    db.connect(config);
 
     var results = {};
 
@@ -15,9 +13,7 @@ function Runner(config, done) {
     var success = true;
 
     function onComplete() {
-        db.disconnect(function () {
-            done(results, success);
-        });
+        done(results, success);
     }
 
     function onQueryComplete(pSuccess) {
@@ -54,9 +50,9 @@ function Runner(config, done) {
             // console.log("Got results for " + queryInfo.key);
             onQueryComplete(true)
         }, function (error) {
-            // console.log(queryInfo.query);
-            // console.log(queryInfo.params);
-            // console.log(error);
+            console.log(queryInfo.query);
+            console.log(queryInfo.params);
+            console.log(error);
             onQueryComplete(false)
         })
     }
@@ -83,15 +79,20 @@ module.exports = (function QueryQueue() {
 
     var dbConfig = {};
     var runnerCount = 0;
+    var connected = false;
 
     return {
         config: function (config) {
             dbConfig = config;
         },
         Runner: function (callback) {
+            if (!connected) {
+                db.connect(dbConfig);
+                connected = true;
+            }
             runnerCount++;
             // console.log("Runner - " + runnerCount);
-            return Runner(dbConfig, function (results, success) {
+            return Runner(db, function (results, success) {
                 runnerCount--;
                 callback(results, success);
             });
