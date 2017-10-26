@@ -4,15 +4,16 @@ var mysql = require("mysql");
 
 module.exports = function () {
 
-    var con;
+    var pool;
 
     function connect(config) {
-        con = mysql.createConnection(config);
+        config['connectionLimit'] = config['connectionLimit'] || 100;
+        pool = mysql.createPool(config);
     }
 
     function executeQuery(query, params, success, failure) {
         params = params || [];
-        con.query(query, params, function (err, result) {
+        pool.query(query, params, function (err, result) {
             if (err) {
                 failure && failure(err);
                 return
@@ -21,8 +22,13 @@ module.exports = function () {
         })
     }
 
+    function disconnect(callback) {
+        pool.end(callback);
+    }
+
     return {
         connect: connect,
-        executeQuery: executeQuery
+        executeQuery: executeQuery,
+        disconnect: disconnect
     }
 };

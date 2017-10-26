@@ -12,17 +12,22 @@ function Runner(config, done) {
 
     var queries = [];
 
-    function reset() {
-        results = {}
+    var success = true;
+
+    function onComplete() {
+        db.disconnect(function () {
+            done(results, success);
+        });
     }
 
-    function onQueryComplete() {
+    function onQueryComplete(pSuccess) {
+        success = success && pSuccess;
         count--;
-        console.log("Pending - " + count);
+        // console.log("Pending - " + count);
         if (count == 0) {
-            console.log("DONE");
+            // console.log("DONE");
             queries = [];
-            done(results)
+            onComplete();
         }
     }
 
@@ -36,7 +41,7 @@ function Runner(config, done) {
     }
 
     function runQuery(queryInfo) {
-        console.log("Running query for " + queryInfo.key);
+        // console.log("Running query for " + queryInfo.key);
         db.executeQuery(queryInfo.query, queryInfo.params, function (result) {
             var keyPath = queryInfo.key.split(".");
             var queryResult = results;
@@ -46,19 +51,22 @@ function Runner(config, done) {
                 queryResult = queryResult[key];
             });
             queryResult[lastKey] = result;
-            console.log("Got results for " + queryInfo.key);
+            // console.log("Got results for " + queryInfo.key);
             onQueryComplete(true)
         }, function (error) {
-            console.log(error);
+            // console.log(queryInfo.query);
+            // console.log(queryInfo.params);
+            // console.log(error);
             onQueryComplete(false)
         })
     }
 
     function start() {
         count = queries.length;
+        // console.log("Query Count - " + count);
         if (count == 0) {
-            done(results);
-            return
+            onComplete();
+            return;
         }
         queries.forEach(function (query) {
             runQuery(query);
@@ -67,21 +75,26 @@ function Runner(config, done) {
 
     return {
         add: add,
-        start: start,
-        reset: reset
+        start: start
     }
 }
 
 module.exports = (function QueryQueue() {
 
     var dbConfig = {};
+    var runnerCount = 0;
 
     return {
         config: function (config) {
             dbConfig = config;
         },
         Runner: function (callback) {
-            return Runner(dbConfig, callback);
+            runnerCount++;
+            // console.log("Runner - " + runnerCount);
+            return Runner(dbConfig, function (results, success) {
+                runnerCount--;
+                callback(results, success);
+            });
         },
         data: function () {
             return dbConfig;
