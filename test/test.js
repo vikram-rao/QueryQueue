@@ -24,7 +24,7 @@ function singleRunner(expected) {
     var runner = QueryQueue.Runner(function (result, success) {
         expect(success).to.equal(expected);
     });
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < 10; i++) {
         runner.add("test", "select name from blah");
     }
     runner.start();
@@ -46,9 +46,13 @@ function setup(conError, sqlError) {
         releaseConnection: function (connection) {
         },
         end: function (callback) {
-            callback();
+            callback && callback();
         }
     }).atLeast(1);
+}
+
+function tearDown() {
+    QueryQueue.reset();
 }
 
 describe('QueryQueue', function () {
@@ -60,7 +64,7 @@ describe('QueryQueue', function () {
     });
 
     after(function () {
-        mysql.restore();
+        tearDown();
     });
 
     it('should be able to take mysql database connection info', function () {
@@ -107,7 +111,7 @@ describe('QueryQueue when sql errors out', function () {
     });
 
     after(function () {
-        mysql.restore();
+        tearDown();
     });
 
     it('works with a large set of queries on a single runner', function () {
@@ -136,7 +140,7 @@ describe('QueryQueue when connection fails', function () {
     });
 
     after(function () {
-        mysql.restore();
+        tearDown();
     });
 
     it('result fails', function () {

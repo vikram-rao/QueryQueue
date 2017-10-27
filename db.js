@@ -11,7 +11,6 @@ module.exports = function () {
     }
 
     function executeQuery(query, params, success, failure) {
-        params = params || [];
         pool.getConnection(function (err, connection) {
             if (err) {
                 failure && failure(err);

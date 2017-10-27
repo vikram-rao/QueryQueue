@@ -28,7 +28,6 @@ function Runner(db, done) {
     }
 
     function add(key, query, params) {
-        params = params || {};
         queries.push({
             key: key,
             query: query,
@@ -99,6 +98,10 @@ module.exports = (function QueryQueue() {
         },
         data: function () {
             return dbConfig;
+        },
+        reset: function (callback) {
+            db.disconnect(callback);
+            connected = false;
         }
     };
 })();
