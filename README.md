@@ -12,6 +12,8 @@ A simple database query queing module
 
 #### Configure
 
+In `app.js` or something once
+
     var QueryQueue = require('queryqueue');
     QueryQueue.config({
         host: "localhost",
@@ -19,6 +21,8 @@ A simple database query queing module
         password: "password",
         database: "database"
     });
+
+`Config` takes same parameter options as that of [mysql.createPool](https://github.com/mysqljs/mysql#pool-options)
 
 #### Use
 
