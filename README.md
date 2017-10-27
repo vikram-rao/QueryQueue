@@ -41,6 +41,10 @@ In `app.js` or something once
 
   `npm test`
 
+## More Info
+
+A detailed [blog post](https://www.vikramrao.in/26/Fetching-multiple-mysql-queries-in-one-go-using-QueryQueue?exclude=true) on Query Queue.
+
 ## Contributing
 
 In lieu of a formal style guide, take care to maintain the existing coding style. Add unit tests for any new or changed
