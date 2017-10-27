@@ -24,20 +24,26 @@ function singleRunner(expected) {
     var runner = QueryQueue.Runner(function (result, success) {
         expect(success).to.equal(expected);
     });
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < 1; i++) {
         runner.add("test", "select name from blah");
     }
     runner.start();
 }
 
-function setup(error) {
+function setup(conError, sqlError) {
     QueryQueue.config(config);
+    mysql.sqlError = sqlError;
+    mysql.conError = conError;
     mysql.expects('createPool').returns({
         getConnection: function (callback) {
-
+            callback(mysql.conError, {
+                query: function (query, params, callback) {
+                    var err = (mysql.sqlError ? {} : false);
+                    callback(err, {});
+                }
+            });
         },
-        query: function (query, params, callback) {
-            callback(error ? {} : false, {});
+        releaseConnection: function (connection) {
         },
         end: function (callback) {
             callback();
@@ -50,7 +56,7 @@ describe('QueryQueue', function () {
     this.timeout(3000);
 
     before(function () {
-        setup(false);
+        setup(false, false);
     });
 
     after(function () {
@@ -69,6 +75,21 @@ describe('QueryQueue', function () {
         runner.start();
     });
 
+    it('with pathed keys', function () {
+        var runner = QueryQueue.Runner(function (result, success) {
+            expect(success).to.equal(true);
+        });
+        runner.add("test.hello", "select name from blah");
+        runner.start();
+    });
+
+    it('with no queries ends gracefully', function () {
+        var runner = QueryQueue.Runner(function (result, success) {
+            expect(success).to.equal(true);
+        });
+        runner.start();
+    });
+
     it('works with a large set of queries on a single runner', function () {
         singleRunner(true);
     });
@@ -77,12 +98,12 @@ describe('QueryQueue', function () {
         manyRunners(true);
     });
 });
-describe('QueryQueue when errors out, ', function () {
+describe('QueryQueue when sql errors out', function () {
 
     this.timeout(10000);
 
     before(function () {
-        setup(true);
+        setup(false, true);
     });
 
     after(function () {
@@ -95,5 +116,30 @@ describe('QueryQueue when errors out, ', function () {
 
     it('works with a large set of runners with a large number of queries each', function () {
         manyRunners(false);
+    });
+
+    it('functioning of a simple runner with errors', function () {
+        var runner = QueryQueue.Runner(function (result, success) {
+            expect(success).to.equal(false);
+        });
+        runner.add("test", "select name from blah");
+        runner.start();
+    });
+});
+
+describe('QueryQueue when connection fails', function () {
+
+    this.timeout(10000);
+
+    before(function () {
+        setup(true);
+    });
+
+    after(function () {
+        mysql.restore();
+    });
+
+    it('result fails', function () {
+        singleRunner(false);
     });
 });
