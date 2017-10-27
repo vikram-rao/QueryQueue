@@ -15,7 +15,7 @@ var config = {
 };
 
 function manyRunners(expected) {
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 100; i++) {
         singleRunner(expected);
     }
 }
@@ -24,7 +24,7 @@ function singleRunner(expected) {
     var runner = QueryQueue.Runner(function (result, success) {
         expect(success).to.equal(expected);
     });
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 100; i++) {
         runner.add("test", "select name from blah");
     }
     runner.start();
@@ -32,13 +32,11 @@ function singleRunner(expected) {
 
 function setup(conError, sqlError) {
     QueryQueue.config(config);
-    mysql.sqlError = sqlError;
-    mysql.conError = conError;
     mysql.expects('createPool').returns({
         getConnection: function (callback) {
-            callback(mysql.conError, {
+            callback(conError, {
                 query: function (query, params, callback) {
-                    var err = (mysql.sqlError ? {} : false);
+                    var err = (sqlError ? {} : false);
                     callback(err, {});
                 }
             });
