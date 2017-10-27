@@ -7,7 +7,6 @@ module.exports = function () {
     var pool;
 
     function connect(config) {
-        config['connectionLimit'] = config['connectionLimit'] || 100;
         pool = mysql.createPool(config);
     }
 
