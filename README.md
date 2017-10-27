@@ -2,7 +2,7 @@
 A simple database query queing module
 
 [![Build Status](https://travis-ci.org/vikram-rao/QueryQueue.svg?branch=master)](https://travis-ci.org/vikram-rao/QueryQueue)
-[![Coverage Status](https://coveralls.io/repos/github/vikram-rao/QueryQueue/badge.svg?branch=master&v=0.0.4)](https://coveralls.io/github/vikram-rao/QueryQueue?branch=master&v=0.0.4)
+[![Coverage Status](https://coveralls.io/repos/github/vikram-rao/QueryQueue/badge.svg?branch=master&v=0.0.6)](https://coveralls.io/github/vikram-rao/QueryQueue?branch=master&v=0.0.6)
 
 ## Installation
 
