@@ -43,7 +43,7 @@ In `app.js` or something once
 
 ## More Info
 
-A detailed [blog post](https://www.vikramrao.in/26/Fetching-multiple-mysql-queries-in-one-go-using-QueryQueue?exclude=true) on Query Queue.
+A detailed [blog post](https://www.vikramrao.in/26/Fetching-multiple-mysql-queries-in-one-go-using-QueryQueue) on Query Queue.
 
 ## Contributing
 
